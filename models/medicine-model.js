@@ -33,9 +33,17 @@ const medicineSchema = new mongoose.Schema({
     type: [doseScheduleSchema],
     default: [],
   },
+  timezone: {
+    type: String,
+    default: "Asia/Jakarta",
+  },
   price: {
     type: Number,
-    default: null,
+    default: "null",
+  },
+  currency: {
+    type: String,
+    default: "idr",
   },
 });
 

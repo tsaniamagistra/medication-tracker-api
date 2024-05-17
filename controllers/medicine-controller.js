@@ -1,8 +1,8 @@
 const Medicine = require('../models/medicine-model');
 const createMedicine = async (req, res) => {
   try {
-    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, price } = req.body;
-    const medicine = new Medicine({ name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, price });
+    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
+    const medicine = new Medicine({ name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency });
     await medicine.save();
     res.status(201).json(medicine);
   } catch (err) {
@@ -52,7 +52,7 @@ const getMedicineByName = async (req, res) => {
 
 const updateMedicineById = async (req, res) => {
   try {
-    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, price } = req.body;
+    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
     let medicine = await Medicine.findById(req.params.id);
     if (!medicine) {
       return res.status(404).json({ message: 'Medicine not found' });
@@ -63,7 +63,9 @@ const updateMedicineById = async (req, res) => {
     medicine.frequencyType = frequencyType;
     medicine.additionalInfo = additionalInfo;
     medicine.doseSchedules = doseSchedules;
+    medicine.timezone = timezone;
     medicine.price = price;
+    medicine.currency = currency;
     await medicine.save();
     res.status(200).json(medicine);
   } catch (err) {
