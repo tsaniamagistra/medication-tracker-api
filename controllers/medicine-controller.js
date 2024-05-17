@@ -1,4 +1,5 @@
 const Medicine = require('../models/medicine-model');
+
 const createMedicine = async (req, res) => {
   try {
     const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
@@ -69,6 +70,9 @@ const updateMedicineById = async (req, res) => {
     await medicine.save();
     res.status(200).json(medicine);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Invalid data submitted'});
+    }
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
   }

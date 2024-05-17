@@ -11,6 +11,7 @@ app.use(express.json());
 
 app.use('/', healthRoute);
 app.use('/medicine', medicineRoute);
+app.use('/user', userRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
