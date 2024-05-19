@@ -10,7 +10,6 @@ async function getSecret() {
     return version.payload.data.toString('utf8');
   } catch (err) {
     console.error('Error retrieving secret:', err);
-    throw err;
   }
 }
 
