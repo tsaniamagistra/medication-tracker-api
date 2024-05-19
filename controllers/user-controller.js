@@ -1,8 +1,13 @@
 const User = require('../models/user-model')
+const mongoose = require('mongoose')
 
 const createUser = async (req, res) => {
   try {
     const { email, password, name } = req.body;
+    const existingUser = await User.findOne({ email }); // cek apakah email sudah digunakan
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
     const user = new User({ email, password, name });
     await user.save();
     res.status(201).json(user);
@@ -17,11 +22,11 @@ const createUser = async (req, res) => {
 
 const getUserByEmail = async (req, res) => {
   try {
-    const user = await User.findByEmail(req.params.email);
+    const user = await User.findOne({ email: req.params.email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json(User);
+    res.status(200).json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
@@ -30,8 +35,11 @@ const getUserByEmail = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     const { email, password, name } = req.body;
-    let user = await Medicine.findById(req.params.id);
+    let user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -51,11 +59,14 @@ const updateUserById = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
   try {
-    const user = await Medicine.findById(req.params.id);
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    await user.remove();
+    await user.deleteOne();
     res.status(200).json({ message: 'User deleted' });
   } catch (err) {
     console.error(err.message);

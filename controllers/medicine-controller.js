@@ -1,4 +1,5 @@
 const Medicine = require('../models/medicine-model');
+const mongoose = require('mongoose');
 
 const createMedicine = async (req, res) => {
   try {
@@ -27,6 +28,9 @@ const getAllMedicines = async (req, res) => {
 
 const getMedicineById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Medicine not found' });
+    }
     const medicine = await Medicine.findById(req.params.id);
     if (!medicine) {
       return res.status(404).json({ message: 'Medicine not found' });
@@ -40,11 +44,12 @@ const getMedicineById = async (req, res) => {
 
 const getMedicineByName = async (req, res) => {
   try {
-    const medicine = await Medicine.findOne({ name: req.params.name });
-    if (!medicine) {
+    const nameRegex = new RegExp(req.params.name, 'i'); // 'i' flag untuk mengabaikan case (case-insensitive)
+    const medicines = await Medicine.find({ name: { $regex: nameRegex } });
+    if (medicines.length === 0) {
       return res.status(404).json({ message: 'Medicine not found' });
     }
-    res.status(200).json(medicine);
+    res.status(200).json(medicines);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
@@ -53,6 +58,9 @@ const getMedicineByName = async (req, res) => {
 
 const updateMedicineById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Medicine not found' });
+    }
     const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
     let medicine = await Medicine.findById(req.params.id);
     if (!medicine) {
@@ -80,11 +88,14 @@ const updateMedicineById = async (req, res) => {
 
 const deleteMedicineById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Medicine not found' });
+    }
     const medicine = await Medicine.findById(req.params.id);
     if (!medicine) {
       return res.status(404).json({ message: 'Medicine not found' });
     }
-    await medicine.remove();
+    await medicine.deleteOne();
     res.status(200).json({ message: 'Medicine deleted' });
   } catch (err) {
     console.error(err.message);
