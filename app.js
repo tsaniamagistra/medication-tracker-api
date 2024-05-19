@@ -1,6 +1,7 @@
 const express = require('express');
 const healthRoute = require('./routes/health-route');
 const medicineRoute = require('./routes/medicine-route');
+const userRoute = require('./routes/user-route');
 const connectDB = require('./config/db-config');
 
 const app = express();

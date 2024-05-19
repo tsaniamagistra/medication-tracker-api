@@ -92,4 +92,11 @@ const deleteMedicineById = async (req, res) => {
   }
 };
 
-module.exports = { createMedicine, getAllMedicines, getMedicineById, getMedicineByName, updateMedicineById, deleteMedicineById };
+module.exports = { 
+  createMedicine,
+  getAllMedicines,
+  getMedicineById,
+  getMedicineByName,
+  updateMedicineById,
+  deleteMedicineById
+};
