@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 const createMedicine = async (req, res) => {
   try {
-    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
-    const medicine = new Medicine({ name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency });
+    const { user, name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
+    const medicine = new Medicine({ user, name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency });
     await medicine.save();
     res.status(201).json(medicine);
   } catch (err) {
@@ -18,7 +18,7 @@ const createMedicine = async (req, res) => {
 
 const getAllMedicines = async (req, res) => {
   try {
-    const medicines = await Medicine.find();
+    const medicines = await Medicine.find({ user: req.params.user });
     res.status(200).json(medicines);
   } catch (err) {
     console.error(err.message);
@@ -45,7 +45,7 @@ const getMedicineById = async (req, res) => {
 const getMedicineByName = async (req, res) => {
   try {
     const nameRegex = new RegExp(req.params.name, 'i'); // 'i' flag untuk mengabaikan case (case-insensitive)
-    const medicines = await Medicine.find({ name: { $regex: nameRegex } });
+    const medicines = await Medicine.find({ user: req.params.user, name: { $regex: nameRegex } });
     if (medicines.length === 0) {
       return res.status(404).json({ message: 'Medicine not found' });
     }
@@ -61,11 +61,12 @@ const updateMedicineById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(404).json({ message: 'Medicine not found' });
     }
-    const { name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
+    const { user, name, dosage, frequency, frequencyType, additionalInfo, doseSchedules, timezone, price, currency } = req.body;
     let medicine = await Medicine.findById(req.params.id);
     if (!medicine) {
       return res.status(404).json({ message: 'Medicine not found' });
     }
+    medicine.user = user;
     medicine.name = name;
     medicine.dosage = dosage;
     medicine.frequency = frequency;

@@ -8,6 +8,11 @@ const doseScheduleSchema = new mongoose.Schema({
 });
 
 const medicineSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -39,7 +44,7 @@ const medicineSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    default: "null",
+    default: null,
   },
   currency: {
     type: String,

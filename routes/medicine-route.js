@@ -4,11 +4,11 @@ const medicineController = require('../controllers/medicine-controller');
 
 router.post('/', medicineController.createMedicine);
 
-router.get('/', medicineController.getAllMedicines);
+router.get('/:user', medicineController.getAllMedicines);
 
 router.get('/id/:id', medicineController.getMedicineById);
 
-router.get('/name/:name', medicineController.getMedicineByName);
+router.get('/name/:user/:name', medicineController.getMedicineByName);
 
 router.put('/:id', medicineController.updateMedicineById);
 

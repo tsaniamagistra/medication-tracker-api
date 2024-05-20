@@ -1,4 +1,5 @@
 const User = require('../models/user-model')
+const Medicine = require('../models/medicine-model')
 const mongoose = require('mongoose')
 
 const createUser = async (req, res) => {
@@ -62,6 +63,7 @@ const deleteUserById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(404).json({ message: 'User not found' });
     }
+    await Medicine.deleteMany({ user: req.params.id }); // hapus juga medicine user terkait
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
