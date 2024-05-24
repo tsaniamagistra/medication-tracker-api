@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profilePicture: {
+    type: String,
+    default: 'https://storage.cloud.google.com/med-tracker-bucket/default-pp.jpg',
+  }
 })
 
 const User = mongoose.model('User', userSchema);

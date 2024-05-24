@@ -1,20 +1,20 @@
-const User = require('../models/user-model')
-const Medicine = require('../models/medicine-model')
-const mongoose = require('mongoose')
+const User = require('../models/user-model');
+const Medicine = require('../models/medicine-model');
+const mongoose = require('mongoose');
 
 const createUser = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, profilePicture } = req.body;
     const existingUser = await User.findOne({ email }); // cek apakah email sudah digunakan
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
-    const user = new User({ email, password, name });
+    const user = new User({ email, password, name, profilePicture });
     await user.save();
     res.status(201).json(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).json({ message: 'Invalid data submitted'});
+      return res.status(400).json({ message: 'Invalid data submitted' });
     }
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
@@ -39,7 +39,7 @@ const updateUserById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const { email, password, name } = req.body;
+    const { email, password, name, profilePicture } = req.body;
     let user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -47,11 +47,14 @@ const updateUserById = async (req, res) => {
     user.email = email;
     user.password = password;
     user.name = name;
+    if (profilePicture !== undefined) {
+      user.profilePicture = profilePicture;
+    }
     await user.save();
     res.status(200).json(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(400).json({ message: 'Invalid data submitted'});
+      return res.status(400).json({ message: 'Invalid data submitted' });
     }
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
