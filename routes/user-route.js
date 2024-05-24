@@ -4,7 +4,9 @@ const userController = require('../controllers/user-controller');
 
 router.post('/', userController.createUser);
 
-router.get('/:email', userController.getUserByEmail);
+router.get('/id/:id', userController.getUserById);
+
+router.get('/email/:email', userController.getUserByEmail);
 
 router.put('/:id', userController.updateUserById);
 
