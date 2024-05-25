@@ -27,7 +27,6 @@ const medicineSchema = new mongoose.Schema({
   },
   frequencyType: {
     type: String,
-    enum: ['day', 'week'],
     default: null,
   },
   additionalInfo: {
