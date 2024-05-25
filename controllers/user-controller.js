@@ -1,6 +1,7 @@
 const User = require('../models/user-model');
 const Medicine = require('../models/medicine-model');
 const mongoose = require('mongoose');
+const { uploadImage } = require('../utils/storage-upload');
 
 const createUser = async (req, res) => {
   try {
@@ -55,17 +56,22 @@ const updateUserById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const { email, password, name, profilePicture } = req.body;
+    
+    const { email, password, name } = req.body;
     let user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    user.email = email;
-    user.password = password;
-    user.name = name;
-    if (profilePicture !== undefined) {
-      user.profilePicture = profilePicture;
+
+    user.email = email || user.email;
+    user.password = password || user.password;
+    user.name = name || user.name;
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req.file, user._id);
+      user.profilePicture = imageUrl;
     }
+
     await user.save();
     res.status(200).json(user);
   } catch (err) {
