@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: 'https://storage.cloud.google.com/med-tracker-bucket/default-pp.jpg',
+    default: 'https://storage.googleapis.com/med-tracker-bucket/default-pp.jpg',
   }
 })
 
